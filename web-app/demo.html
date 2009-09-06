@@ -1,0 +1,64 @@
+<html>  
+<head>  
+    <title>Grails-Cometd</title>  
+    <script type="text/javascript" src="plugins/cometd-0.1.5/dojo/dojo.js"></script>  
+    <script type="text/javascript">  
+        dojo.require('dojox.cometd');  
+  
+        dojo.addOnLoad(init);  
+        dojo.addOnUnload(destroy);  
+  
+        function init() {  
+            dojox.cometd.init('http://localhost:8080/grails-cometd/cometd');  
+            dojox.cometd.subscribe('/quotes/AAPL', onMessage);  
+            dojox.cometd.subscribe('/quotes/GOOG', onMessage);  
+            dojox.cometd.subscribe('/quotes/YHOO', onMessage);  
+        }  
+  
+        function destroy() {  
+            dojox.cometd.unsubscribe('/quotes/AAPL');  
+            dojox.cometd.unsubscribe('/quotes/GOOG');  
+            dojox.cometd.unsubscribe('/quotes/YHOO');  
+            dojox.cometd.disconnect();  
+        }  
+  
+        function onMessage(m) {  
+            var k = m.channel.substring(8, 12);  
+            var o = JSON.parse(m.data);  
+            dojo.byId(k + '_lastTrade').value = o.lastTrade;  
+            dojo.byId(k + '_change').value = (o.change + '').substring(0, 4);  
+            dojo.byId(k + '_volume').value = o.volume;  
+        }  
+    </script>  
+</head>  
+<body>  
+<form action="">  
+    <table border="1" cellpadding="2" cellspacing="0">  
+        <tr>  
+            <td>Symbol</td>  
+            <td>Last Trade</td>  
+            <td>Change</td>  
+            <td>Volume</td>  
+        </tr>  
+        <tr>  
+            <td>AAPL</td>  
+            <td><input type="text" id="AAPL_lastTrade"></td>  
+            <td><input type="text" id="AAPL_change"></td>  
+            <td><input type="text" id="AAPL_volume"></td>  
+        </tr>  
+        <tr>  
+            <td>GOOG</td>  
+            <td><input type="text" id="GOOG_lastTrade"></td>  
+            <td><input type="text" id="GOOG_change"></td>  
+            <td><input type="text" id="GOOG_volume"></td>  
+        </tr>  
+        <tr>  
+            <td>YHOO</td>  
+            <td><input type="text" id="YHOO_lastTrade"></td>  
+            <td><input type="text" id="YHOO_change"></td>  
+            <td><input type="text" id="YHOO_volume"></td>  
+        </tr>  
+    </table>  
+</form>  
+</body>  
+</html>
